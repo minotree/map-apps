@@ -2,7 +2,7 @@
 
 ## 제품과 플랫폼 경계
 
-이 leaf 앱은 공개 산책로 운동시설·설치 기구 정보를 Apps in Toss에서 제공한다. React 18,
+이 leaf 앱은 공개 실외 운동기구 지점·설치 기구 정보를 Apps in Toss에서 제공한다. React 18,
 Apps in Toss Web Framework·Devtools, TDS Mobile/AIT, OpenLayers와 Vite 설정을 독립 소유한다.
 사용자 PWA의 UI·라우팅·환경 파일을 import하지 않고 `@map-apps/contracts`, `@map-apps/data`의
 공개 export만 공유한다.
@@ -22,7 +22,7 @@ Apps in Toss Web Framework·Devtools, TDS Mobile/AIT, OpenLayers와 Vite 설정�
 ## 데이터·광고·개인정보
 
 - Supabase DB·Auth·RLS를 데이터 권한 기준으로 사용하고 공개 지점·기구 조회만 허용한다.
-- 현재 사진 조회는 공통 데이터 패키지의 Supabase Storage 경로를 사용한다. Cloudflare R2·Worker 전환은 별도 작업이다.
+- 사진 바이너리는 비공개 Cloudflare R2에 두고 공개 지점·설치 기구 여부를 확인하는 Worker URL로 조회한다. Supabase Storage를 사용하지 않는다.
 - 광고 모드는 기본 `off`다. `test`는 공식 테스트 ID만, `production`은 승인된 운영 그룹 ID만 사용한다.
 - 배너·전면 광고 실패가 시설 상세 이동을 막지 않게 하며 실제 토스 광고 검증을 브라우저 대체 검사로 주장하지 않는다.
 - 기구 조회 통계는 선택 동의·연령대·시도·일별 집계·90일 보관 조건과 DB/RLS 검증 전 활성화하지 않는다.

@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "walk-fit-images",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-04",
+  "workers_dev": true,
+  "vars": {
+    "SUPABASE_URL": "https://PROJECT_REF.supabase.co",
+    "SUPABASE_PUBLISHABLE_KEY": "SET_IN_CLOUDFLARE_DASHBOARD",
+    "ALLOWED_ORIGINS": "http://127.0.0.1:5175,http://127.0.0.1:5176",
+    "MAX_IMAGE_BYTES": "10485760"
+  },
+  "r2_buckets": [
+    {
+      "binding": "IMAGES",
+      "bucket_name": "walk-fit-images-preview"
+    }
+  ]
+}

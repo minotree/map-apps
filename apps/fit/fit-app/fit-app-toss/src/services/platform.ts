@@ -9,7 +9,7 @@ export const hasConnection = Boolean(url && key);
 const client = createClient(url || 'https://placeholder.supabase.co', key || 'placeholder', {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
 });
-export const sites = createSiteRepository(client);
+export const sites = createSiteRepository(client, { imageApiBaseUrl: import.meta.env.VITE_IMAGE_API_BASE_URL });
 export const profiles = createProfileRepository({
   get: () => Storage.getItem('USER_PROFILE'),
   set: value => Storage.setItem('USER_PROFILE', value),

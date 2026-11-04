@@ -3,8 +3,9 @@ import { getTodaySurveys, saveSurvey } from './surveyService';
 
 const mocks = vi.hoisted(() => ({
   getUser: vi.fn(), order: vi.fn(), insert: vi.fn(), saved: vi.fn(),
-  upload: vi.fn(), getPublicUrl: vi.fn(), eq: vi.fn(),
+  upload: vi.fn(), privateUrl: vi.fn(), eq: vi.fn(),
 }));
+vi.mock('./imageApi', () => ({ imageApi: { upload: mocks.upload, privateUrl: mocks.privateUrl } }));
 vi.mock('./supabase', () => ({
   supabase: {
     auth: { getUser: mocks.getUser },
@@ -12,7 +13,6 @@ vi.mock('./supabase', () => ({
       select: () => ({ eq: mocks.eq }),
       insert: mocks.insert,
     }),
-    storage: { from: () => ({ upload: mocks.upload, getPublicUrl: mocks.getPublicUrl }) },
   },
 }));
 const survey = { facility_name: '테스트 시설', latitude: 37, longitude: 127, address: '서울' };
@@ -22,8 +22,8 @@ beforeEach(() => {
   mocks.eq.mockReturnValue({ gte: () => ({ order: mocks.order }) });
   mocks.insert.mockReturnValue({ select: mocks.saved });
   mocks.saved.mockResolvedValue({ data: [{ ...survey, id: 'survey-id', stamped_photo_path: 'photo.webp' }], error: null });
-  mocks.upload.mockImplementation(async (path: string) => ({ data: { path }, error: null }));
-  mocks.getPublicUrl.mockReturnValue({ data: { publicUrl: 'https://example.com/photo.webp' } });
+  mocks.upload.mockResolvedValue({ key: 'site-overviews/photo.webp', size: 5 });
+  mocks.privateUrl.mockResolvedValue('https://images.example.com/private/photo.webp');
 });
 
 test('조회 실패를 빈 목록으로 숨기지 않는다', async () => {
@@ -47,9 +47,9 @@ test('인증 실패 시 사진과 DB에 쓰지 않는다', async () => {
 
 test('본인 소유 pending 조사와 사진 경로를 저장하고 공개 URL을 반환한다', async () => {
   const result = await saveSurvey(survey, new Blob(['photo']));
-  expect(mocks.upload).toHaveBeenCalledWith(expect.stringMatching(/^representative\/user-a\/.+\.webp$/), expect.any(Blob), expect.objectContaining({ upsert: false }));
+  expect(mocks.upload).toHaveBeenCalledWith('site-overview', expect.any(Blob));
   expect(mocks.insert).toHaveBeenCalledWith([expect.objectContaining({ created_by: 'user-a', status: 'pending', linked_site_id: null, stamped_photo_path: expect.any(String) })]);
-  expect(result.photo_url).toBe('https://example.com/photo.webp');
+  expect(result.photo_url).toBe('https://images.example.com/private/photo.webp');
 });
 
 test('DB 실패 후 동일 사진 재시도는 업로드를 재사용한다', async () => {
@@ -63,7 +63,7 @@ test('DB 실패 후 동일 사진 재시도는 업로드를 재사용한다', as
 
 test('사진 업로드 실패 시 DB에 쓰지 않고 재시도 시 새 업로드를 한다', async () => {
   const photo = new Blob(['photo']);
-  mocks.upload.mockResolvedValueOnce({ data: null, error: { message: 'upload failed' } });
+  mocks.upload.mockRejectedValueOnce(new Error('upload failed'));
   await expect(saveSurvey(survey, photo)).rejects.toThrow('upload failed');
   expect(mocks.insert).not.toHaveBeenCalled();
   await saveSurvey(survey, photo);

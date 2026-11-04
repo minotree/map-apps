@@ -2,7 +2,7 @@ import { createSiteRepository } from '@map-apps/data';
 import { supabase, requireSupabase } from '../lib/supabaseClient';
 export type { SiteDetail, InstallationItem, EquipmentDetail } from '@map-apps/contracts';
 
-const repository = createSiteRepository(supabase);
+const repository = createSiteRepository(supabase, { imageApiBaseUrl: import.meta.env.VITE_IMAGE_API_BASE_URL });
 
 export function getPublishedSites() {
   requireSupabase();

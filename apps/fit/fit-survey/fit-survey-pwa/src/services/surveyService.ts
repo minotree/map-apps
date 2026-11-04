@@ -1,8 +1,8 @@
 import { SurveyData, SurveyLocationRow } from '../types/survey';
 import { supabase } from './supabase';
+import { imageApi } from './imageApi';
 
 const TABLE_NAME = 'survey_locations';
-const STORAGE_BUCKET = 'survey-photos';
 // Retain completed uploads for retries of the same form, separately per user.
 const uploadedPhotos = new WeakMap<Blob, Map<string, string>>();
 
@@ -15,16 +15,11 @@ async function requireUserId(): Promise<string> {
 }
 
 export async function uploadSurveyPhoto(photoBlob: Blob, path: string): Promise<string> {
-  const { data, error } = await supabase.storage.from(STORAGE_BUCKET).upload(path, photoBlob, {
-    contentType: 'image/webp',
-    cacheControl: '3600',
-    upsert: false,
-  });
-  if (error) throw new Error(`현장 사진 업로드에 실패했습니다: ${error.message}`);
-  return data.path;
+  void path;
+  return (await imageApi.upload('site-overview', photoBlob)).key;
 }
 
-function toSurveyData(row: SurveyLocationRow): SurveyData {
+async function toSurveyData(row: SurveyLocationRow): Promise<SurveyData> {
   return {
     id: row.id,
     facility_name: row.facility_name,
@@ -33,9 +28,7 @@ function toSurveyData(row: SurveyLocationRow): SurveyData {
     accuracy: row.accuracy,
     address: row.address,
     memo: row.review_note,
-    photo_url: row.stamped_photo_path
-      ? supabase.storage.from(STORAGE_BUCKET).getPublicUrl(row.stamped_photo_path).data.publicUrl
-      : undefined,
+    photo_url: row.stamped_photo_path ? await imageApi.privateUrl(row.stamped_photo_path) : undefined,
     created_at: row.created_at,
   };
 }
@@ -89,7 +82,7 @@ export async function getTodaySurveys(): Promise<SurveyData[]> {
     .gte('created_at', todayStart.toISOString())
     .order('created_at', { ascending: false });
   if (error) throw error;
-  return (data ?? []).map(toSurveyData);
+  return Promise.all((data ?? []).map(toSurveyData));
 }
 
 export const getSurveys = getTodaySurveys;

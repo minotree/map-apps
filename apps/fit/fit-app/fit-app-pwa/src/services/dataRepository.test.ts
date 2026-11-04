@@ -16,7 +16,7 @@ function repository(responses: { body: unknown; status?: number; wait?: Promise<
       });
     } },
   });
-  return { sites: createSiteRepository(client), requests };
+  return { sites: createSiteRepository(client, { imageApiBaseUrl: 'https://images.fixture.test' }), requests };
 }
 
 const site = { id: 'site-1', name: '시설', latitude: '37.5', longitude: '127.0' };
@@ -63,13 +63,13 @@ test('시설 사진 경로와 배열 형태의 카탈로그를 변환한다', as
     { body: { ...site, site_image_path: 'old/photo.jpg', toilet_status: 'invalid' } },
     { body: 'site/photo.jpg' },
     { body: [{ id: 'installation-1', quantity: 2, display_order: 1, equipment_id: 'equipment-1',
-      equipment_catalog: [{ name: '허리 돌리기', model_name: 'A' }] }] },
-    { body: { signedURL: '/object/sign/survey-photos/site/photo.jpg?token=fixture' } },
+      equipment_catalog: [{ name: '허리 돌리기', model_name: 'A', default_image_path: 'equipment/photo.webp' }] }] },
   ]);
   const result = await sites.getSiteDetail('site-1');
-  expect(result?.site_image_path).toBe('https://fixture.supabase.co/storage/v1/object/sign/survey-photos/site/photo.jpg?token=fixture');
+  expect(result?.site_image_path).toBe('https://images.fixture.test/v1/public/sites/site-1/image');
   expect(result?.toilet_status).toBe('unknown');
-  expect(result?.equipments[0]).toMatchObject({ installationId: 'installation-1', name: '허리 돌리기', quantity: 2 });
+  expect(result?.equipments[0]).toMatchObject({ installationId: 'installation-1', name: '허리 돌리기', quantity: 2,
+    default_image_path: 'https://images.fixture.test/v1/public/installations/installation-1/image' });
 });
 
 test('설치 기구 조회 실패를 빈 기구 목록으로 숨기지 않는다', async () => {
@@ -88,9 +88,11 @@ test.each([false, undefined])('부모 시설이 공개 상태가 아니면 기�
 
 test('공개 시설의 기구 상세에서 객체 카탈로그와 기본 설명을 처리한다', async () => {
   const { sites, requests } = repository([{ body: { id: 'i', site_id: 's', quantity: 0,
-    exercise_sites: [{ name: '시설', is_published: true }], equipment_catalog: { name: '기구' } } }]);
+    exercise_sites: [{ name: '시설', is_published: true }],
+    equipment_catalog: { name: '기구', default_image_path: 'equipment/key.webp' } } }]);
   expect(await sites.getEquipmentDetail('s', 'i')).toMatchObject({
     siteName: '시설', equipmentName: '기구', quantity: 1, instructions: '등록된 운동 방법이 없습니다.',
+    default_image_path: 'https://images.fixture.test/v1/public/installations/i/image',
   });
   expect(requests[0].searchParams.get('site_id')).toBe('eq.s');
   expect(requests[0].searchParams.get('is_published')).toBe('eq.true');
@@ -111,11 +113,6 @@ test('사진 RPC 오류는 오래된 사진으로 숨기지 않는다', async ()
   await expect(sites.getSiteDetail('site-1')).rejects.toThrow();
 });
 
-test('서명 권한 오류는 공개 URL로 우회하지 않는다', async () => {
-  const { sites } = repository([{ body: site }, { body: 'new.jpg' }, { body: [] }, { body: { message: 'denied' }, status: 403 }]);
-  await expect(sites.getSiteDetail('site-1')).rejects.toThrow();
-});
-
 test.each([{}, [], 42, ''])('잘못된 사진 응답은 거부한다: %s', async photo => {
   const { sites } = repository([{ body: site }, { body: photo }]);
   await expect(sites.getSiteDetail('site-1')).rejects.toThrow();
@@ -129,54 +126,16 @@ test('사진이 없는 공개 지점은 사진 없이 반환한다', async () =>
   expect(requests.some(url => url.pathname.includes('survey_locations'))).toBe(false);
 });
 
-test('같은 저장소의 공개 URL도 서명 URL로 변환한다', async () => {
-  const { sites, requests } = repository([{ body: site },
-    { body: 'https://fixture.supabase.co/storage/v1/object/public/survey-photos/old.jpg' },
-    { body: [] }, { body: { signedURL: '/object/sign/survey-photos/old.jpg?token=fixture' } }]);
-  expect((await sites.getSiteDetail('site-1'))?.site_image_path).toContain('/object/sign/');
-  expect(requests[3].pathname).toBe('/storage/v1/object/sign/survey-photos/old.jpg');
-});
-
-
-test('사진 경로는 매번 갱신하고 같은 경로의 유효 서명만 재사용한다', async () => {
-  const clock = vi.spyOn(Date, 'now').mockReturnValue(1000000);
-  try {
-    const { sites, requests } = repository([
-      { body: site }, { body: 'first.jpg' }, { body: [] }, { body: { signedURL: '/object/sign/survey-photos/first.jpg?token=one' } },
-      { body: site }, { body: 'first.jpg' }, { body: [] },
-      { body: site }, { body: 'second.jpg' }, { body: [] }, { body: { signedURL: '/object/sign/survey-photos/second.jpg?token=two' } },
-      { body: site }, { body: 'second.jpg' }, { body: [] }, { body: { signedURL: '/object/sign/survey-photos/second.jpg?token=three' } },
-    ]);
-    const first = await sites.getSiteDetail('site-1');
-    expect((await sites.getSiteDetail('site-1'))?.site_image_path).toBe(first?.site_image_path);
-    expect((await sites.getSiteDetail('site-1'))?.site_image_path).toContain('token=two');
-    clock.mockReturnValue(1000000 + 56 * 60 * 1000);
-    expect((await sites.getSiteDetail('site-1'))?.site_image_path).toContain('token=three');
-    expect(requests.filter(url => url.pathname.includes('/rpc/'))).toHaveLength(4);
-    expect(requests.filter(url => url.pathname.includes('/object/sign/'))).toHaveLength(3);
-  } finally { clock.mockRestore(); }
-});
-
-test('실패한 서명은 캐시하지 않고 다음 상세 요청에서 재시도한다', async () => {
-  const { sites } = repository([
-    { body: site }, { body: 'photo.jpg' }, { body: [] }, { body: { message: 'denied' }, status: 403 },
-    { body: site }, { body: 'photo.jpg' }, { body: [] }, { body: { signedURL: '/object/sign/survey-photos/photo.jpg?token=retry' } },
-  ]);
-  await expect(sites.getSiteDetail('site-1')).rejects.toThrow('시설 사진');
-  expect((await sites.getSiteDetail('site-1'))?.site_image_path).toContain('token=retry');
-});
-
-test('설치 기구 응답이 지연되어도 사진 서명을 먼저 시작한다', async () => {
+test('설치 기구 응답이 지연되어도 사진 RPC를 먼저 시작한다', async () => {
   let release = () => {};
   const wait = new Promise<void>(resolve => { release = resolve; });
   const { sites, requests } = repository([
-    { body: site }, { body: 'photo.jpg' }, { body: [], wait },
-    { body: { signedURL: '/object/sign/survey-photos/photo.jpg?token=parallel' } },
+    { body: site }, { body: 'site-overviews/photo.webp' }, { body: [], wait },
   ]);
   const pending = sites.getSiteDetail('site-1');
   try {
-    await vi.waitFor(() => expect(requests.some(url => url.pathname.includes('/object/sign/'))).toBe(true));
+    await vi.waitFor(() => expect(requests.some(url => url.pathname.includes('/rpc/'))).toBe(true));
   } finally { release(); }
-  expect((await pending)?.site_image_path).toContain('token=parallel');
+  expect((await pending)?.site_image_path).toBe('https://images.fixture.test/v1/public/sites/site-1/image');
 });
 

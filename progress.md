@@ -5,21 +5,21 @@
 ## 현재 진행 상황
 
 > 기준일: 2026-11-04
-> 기본 프로그램 이관은 완료했으며, 다음 단계는 Supabase 기준 SQL·RLS·RPC 정리다.
+> Supabase는 DB/Auth/RLS/RPC만, 이미지는 Cloudflare R2/Worker만 사용하도록 확정했다. 기존 데이터 초기화 전제의 권한 교정 migration을 작성했으며 아직 운영 DB에는 적용하지 않았다.
 
 | 단계 | 작업 | 상태 | 현재 결과 / 재개 기준 |
 | --- | --- | --- | --- |
 | 1 | 공통 패키지와 네 leaf 앱 이관 | 완료 | 공통 계약·데이터, 사용자 PWA·토스, 조사 PWA, 관리자 desktop 이관 |
 | 2 | 앱별 자동 검사 | 완료 | 앱별 타입·단위·lint·build와 관리자 Rust 검사 완료 |
-| 3 | Supabase 기준 정리 | **다음 작업** | SQL·RLS·RPC·Storage 의존성을 비교하며 실제 DB에는 아직 적용하지 않음 |
-| 4 | Cloudflare R2·Worker 전환 | 대기 | DB 사진 경로와 권한 기준 확정 후 진행 |
+| 3 | Supabase 기준 정리 | **진행 중** | `admin_users`, 관리자 전용 변경 RLS, `status` 정본과 데이터 초기화 migration 작성. 검토·bootstrap·역할 검사 필요, 운영 DB 미변경 |
+| 4 | Cloudflare R2·Worker 전환 | **진행 중** | 비공개 R2 Worker 구현·검사와 사용자 PWA·토스 공개 이미지 조회 전환 완료. 조사·관리자 쓰기 연동 대기 |
 | 5 | 플랫폼 실환경·배포 검증 | 대기 | PWA·토스·Tauri를 플랫폼별로 분리하여 검증 |
 
 ### 다음에 재개할 작업
 
-1. 네 앱과 공통 패키지의 Supabase 테이블·뷰·RPC·Storage 참조를 목록화한다.
-2. 원본별 SQL의 중복·충돌과 역할별 RLS 기준을 정리한다.
-3. 사용자 확인 전에는 실제 DB·배포·외부 계정을 변경하지 않는다.
+1. 조사 PWA와 관리자 desktop의 Supabase Storage 호출을 Worker API로 교체한다.
+2. 권한 교정 migration·관리자 bootstrap·역할별 검사를 검토한다.
+3. 실제 DB 적용, Supabase Storage 삭제, Cloudflare 버킷 생성·배포는 별도 승인 전까지 하지 않는다.
 
 ## 사용자 공통 패키지 1차 이전 (2026-11-04)
 

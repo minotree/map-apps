@@ -2,6 +2,7 @@ packages:
   - apps/*
   - apps/*/*
   - apps/*/*/*
+  - cloudflare/*
   - packages/*
 
 onlyBuiltDependencies:

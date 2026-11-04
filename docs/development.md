@@ -109,6 +109,28 @@ git diff --check
 - mobile: 웹 빌드, Capacitor sync, Android/iOS 빌드와 실기기 검증을 분리.
 - desktop: 프런트엔드 dev/build, `cargo check`·`cargo test`, Tauri dev/build, Windows 번들 경로, 서명·설치·업데이트 검증을 분리.
 
+## 산책핏 이미지 Worker
+
+| Key | Value |
+| --- | --- |
+| 실행 위치 | `D:\DEV\map-apps` |
+| 로컬 개발 | `pnpm.cmd dev:fit-images:worker` |
+| 타입 검사 | `pnpm.cmd --filter @map-apps/fit-images-worker typecheck` |
+| 단위 검사 | `pnpm.cmd --filter @map-apps/fit-images-worker test` |
+| 번들 검사 | `pnpm.cmd build:fit-images:worker` — `wrangler deploy --dry-run`, 실제 배포 없음 |
+| 실제 배포 | `pnpm.cmd --filter @map-apps/fit-images-worker deploy` — 계정·버킷·변수 확정과 사용자 승인 필요 |
+
+## Supabase 읽기 전용 감사
+
+| Key | Value |
+| --- | --- |
+| 실행 위치 | Supabase 대시보드의 `walk_fit` 프로젝트 → SQL Editor |
+| 감사 SQL | `D:\DEV\map-apps\supabase\audit-baseline.sql` 전체 내용 |
+| 단일 결과 export | 여러 SELECT 중 마지막 결과만 보이면 `D:\DEV\map-apps\supabase\audit-baseline-export.sql` 전체 내용 실행 |
+| 조회 범위 | 대상 테이블 메타데이터, 함수·권한·RLS, 트리거·뷰, 버킷·Storage 정책, 관련 확장 |
+| 제외 범위 | 업무 데이터 행, `auth.users`, 비밀값, DDL·DML 실행 |
+| 결과 전달 | 각 결과를 CSV로 내려받거나 비밀값 없는 텍스트로 저장. 저장 파일은 검토 전 Git에 추가하지 않음 |
+
 ## 새 앱 추가 시
 
 1. 도메인·제품·플랫폼과 leaf 경로를 확정한다.
