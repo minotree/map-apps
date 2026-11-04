@@ -10,6 +10,12 @@ playwright-report/
 test-results/
 target/
 **/src-tauri/target/
+**/src-tauri/gen/
+.venv-images/
+**/.models/
+__pycache__/
+*.pyc
+.build-tools/
 *.pdb
 *.msi
 *.msix

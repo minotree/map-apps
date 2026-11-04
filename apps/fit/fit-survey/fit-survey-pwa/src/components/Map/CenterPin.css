@@ -1,0 +1,51 @@
+.center-pin-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -8px; /* Offset for pin tip anchor */
+}
+
+.center-pin-icon {
+  width: 44px;
+  height: 44px;
+  color: #eb445a;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45));
+  animation: bounce 0.3s ease-out;
+}
+
+.center-pin-target {
+  width: 8px;
+  height: 8px;
+  background-color: #eb445a;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(235, 68, 90, 0.25);
+  margin-top: -2px;
+}
+
+.center-pin-tooltip {
+  background: rgba(26, 26, 26, 0.9);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  margin-bottom: 4px;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+

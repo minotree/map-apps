@@ -6,6 +6,22 @@
     "node": ">=24.22.0 <25"
   },
   "scripts": {
+    "dev:fit-app:pwa": "pnpm --filter @map-apps/fit-app-pwa dev",
+    "dev:fit-app:toss": "pnpm --filter @map-apps/fit-app-toss dev",
+    "dev:fit-survey:pwa": "pnpm --filter @map-apps/fit-survey-pwa dev",
+    "dev:fit-admin:desktop": "pnpm --filter @map-apps/fit-admin-desktop dev",
+    "typecheck:fit-app:pwa": "pnpm --filter @map-apps/fit-app-pwa typecheck",
+    "typecheck:fit-app:toss": "pnpm --filter @map-apps/fit-app-toss typecheck",
+    "typecheck:fit-survey:pwa": "pnpm --filter @map-apps/fit-survey-pwa typecheck",
+    "typecheck:fit-admin:desktop": "pnpm --filter @map-apps/fit-admin-desktop typecheck",
+    "test:fit-app:pwa": "pnpm --filter @map-apps/fit-app-pwa test",
+    "test:fit-app:toss": "pnpm --filter @map-apps/fit-app-toss test",
+    "test:fit-survey:pwa": "pnpm --filter @map-apps/fit-survey-pwa test",
+    "test:fit-admin:desktop": "pnpm --filter @map-apps/fit-admin-desktop test",
+    "build:fit-app:pwa": "pnpm --filter @map-apps/fit-app-pwa build",
+    "build:fit-app:toss": "pnpm --filter @map-apps/fit-app-toss build",
+    "build:fit-survey:pwa": "pnpm --filter @map-apps/fit-survey-pwa build",
+    "build:fit-admin:desktop": "pnpm --filter @map-apps/fit-admin-desktop build",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm -r --if-present test",
     "build": "pnpm -r --if-present build"

@@ -1,0 +1,8 @@
+{
+  "name": "field-survey-pwa",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
+

@@ -3,3 +3,7 @@ packages:
   - apps/*/*
   - apps/*/*/*
   - packages/*
+
+onlyBuiltDependencies:
+  - cypress
+  - esbuild

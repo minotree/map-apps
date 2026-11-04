@@ -1,0 +1,103 @@
+.home-content {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  position: relative;
+  height: 100%;
+}
+
+.map-container-full {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* 하단 플로팅 정보 및 액션 패널 */
+.bottom-survey-card {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 24px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.bottom-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.bottom-card-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #3880ff;
+  background-color: #eff6ff;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: -0.2px;
+}
+
+.bottom-card-coords {
+  font-size: 11px;
+  color: #64748b;
+  font-family: monospace;
+}
+
+.bottom-card-address {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+  margin-bottom: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bottom-card-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.bottom-btn-camera {
+  flex: 1;
+}
+
+.bottom-btn-register {
+  flex: 1.5;
+}
+
+/* 상단 GPS 상태 바 */
+.gps-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background-color: #f1f5f9;
+  color: #334155;
+}
+
+.gps-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #94a3b8;
+}
+
+.gps-dot.active {
+  background-color: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+}
+
