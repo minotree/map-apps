@@ -6,7 +6,7 @@
   "workers_dev": true,
   "preview_urls": false,
   "vars": {
-    "ALLOWED_ORIGINS": "http://127.0.0.1:5175,http://127.0.0.1:5176,https://walk-fit-survey.minotree0902.workers.dev",
+    "ALLOWED_ORIGINS": "http://127.0.0.1:5173,http://127.0.0.1:5174,http://127.0.0.1:5175,http://127.0.0.1:5176,https://walk-fit.minotree0902.workers.dev,https://walk-fit-survey.minotree0902.workers.dev",
     "MAX_IMAGE_BYTES": "10485760"
   },
   "r2_buckets": [

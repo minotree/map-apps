@@ -1,5 +1,5 @@
 import React from 'react';
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, render, screen } from '@testing-library/react';
 import { afterEach, expect, test, vi } from 'vitest';
 import App from './App';
 import { isAuthenticated } from './services/authService';
@@ -30,5 +30,21 @@ test('인증 확인 실패 시 로딩에 머물지 않고 로그인 화면을 �
   vi.mocked(isAuthenticated).mockRejectedValue(new Error('connection failed'));
   render(<App />);
   expect(await screen.findByText('로그인 화면')).toBeDefined();
+});
+
+test('인증 확인이 멈추면 제한 시간 후 로그인 화면으로 복구한다', async () => {
+  vi.useFakeTimers();
+  vi.spyOn(console, 'error').mockImplementation(() => {});
+  vi.mocked(isAuthenticated).mockImplementation(() => new Promise(() => {}));
+
+  render(<App />);
+  expect(screen.getByText('로그인 상태를 확인하고 있습니다.')).toBeDefined();
+
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(8_000);
+  });
+
+  expect(screen.getByText('로그인 화면')).toBeDefined();
+  vi.useRealTimers();
 });
 

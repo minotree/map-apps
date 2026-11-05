@@ -8,9 +8,9 @@ export default defineConfig({
     host: "127.0.0.1",
     port: 5176,
     strictPort: true,
-    // Tauri 개발 실행 시 Rust 컴파일 임시 파일(src-tauri) 감시 제외
+    // Tauri와 로컬 Python 이미지 런타임 생성물은 프런트엔드 변경 감시에서 제외한다.
     watch: {
-      ignored: ['**/src-tauri/**'],
+      ignored: ['**/src-tauri/**', '**/.venv-images/**', '**/image-service/.models/**'],
     },
   },
   preview: { 

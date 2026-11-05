@@ -29,16 +29,23 @@ export default defineConfig({
         ],
       },
       workbox: {
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         runtimeCaching: [
           {
-            urlPattern: ({ request }) => request.destination === 'image',
-            handler: 'CacheFirst',
+            urlPattern: /^https:\/\/api\.vworld\.kr\/req\/wmts\//,
+            handler: 'NetworkFirst',
             options: {
-              cacheName: 'images',
+              cacheName: 'vworld-map-tiles-v1',
+              networkTimeoutSeconds: 4,
               expiration: {
-                maxEntries: 20,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+                maxEntries: 200,
+                maxAgeSeconds: 7 * 24 * 60 * 60,
+              },
+              cacheableResponse: {
+                statuses: [200],
               },
             },
           },

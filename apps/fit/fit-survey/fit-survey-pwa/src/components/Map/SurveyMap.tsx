@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { CenterPin } from './CenterPin';
@@ -92,18 +92,44 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
   onRequestUserLocation,
 }) => {
   const [isMoving, setIsMoving] = useState(false);
+  const [mapGeneration, setMapGeneration] = useState(0);
+  const wasHidden = useRef(false);
+  const vworldApiKey = import.meta.env.VITE_VWORLD_API_KEY;
+
+  useEffect(() => {
+    const restoreMap = () => setMapGeneration(generation => generation + 1);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        wasHidden.current = true;
+      } else if (wasHidden.current) {
+        wasHidden.current = false;
+        restoreMap();
+      }
+    };
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) restoreMap();
+    };
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    window.addEventListener('pageshow', onPageShow);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('pageshow', onPageShow);
+    };
+  }, []);
 
   return (
     <div className="map-wrapper">
       <MapContainer
+        key={`survey-map-${mapGeneration}`}
         center={[center.latitude, center.longitude]}
         zoom={17}
         zoomControl={false}
         scrollWheelZoom={true}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.vworld.kr/">V-World</a>'
+          url={`https://api.vworld.kr/req/wmts/1.0.0/${encodeURIComponent(vworldApiKey)}/Base/{z}/{y}/{x}.png`}
           maxZoom={19}
         />
 

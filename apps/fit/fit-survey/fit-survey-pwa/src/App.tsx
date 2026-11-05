@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { IonApp, IonLoading, IonToast } from '@ionic/react';
+import React, { useEffect, useState } from 'react';
+import { IonApp, IonToast } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Login from './components/Login';
 import Home from './pages/Home';
@@ -7,31 +7,67 @@ import { isAuthenticated } from './services/authService';
 import '@ionic/react/css/ionic.bundle.css';
 import './theme/variables.css';
 
+export const AUTH_CHECK_TIMEOUT_MS = 8_000;
+
+async function checkAuthenticationWithTimeout() {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+  try {
+    return await Promise.race([
+      isAuthenticated(),
+      new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(
+          () => reject(new Error('인증 상태 확인 시간이 초과되었습니다.')),
+          AUTH_CHECK_TIMEOUT_MS,
+        );
+      }),
+    ]);
+  } finally {
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
+    }
+  }
+}
+
 const App: React.FC = () => {
   const [authChecked, setAuthChecked] = useState(false);
   const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(false);
   const [authError, setAuthError] = useState(false);
 
   useEffect(() => {
+    let active = true;
+
     const checkAuth = async () => {
       try {
-        const auth = await isAuthenticated();
-        setIsAuthenticatedUser(auth);
+        const authenticated = await checkAuthenticationWithTimeout();
+        if (active) {
+          setIsAuthenticatedUser(authenticated);
+        }
       } catch (error) {
         console.error('인증 확인 실패:', error);
-        setAuthError(true);
+        if (active) {
+          setAuthError(true);
+        }
       } finally {
-        setAuthChecked(true);
+        if (active) {
+          setAuthChecked(true);
+        }
       }
     };
 
-    checkAuth();
+    void checkAuth();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   if (!authChecked) {
     return (
       <IonApp>
-        <IonLoading isOpen={true} message="인증 확인 중..." />
+        <main className="ion-padding ion-text-center" aria-live="polite">
+          <p>로그인 상태를 확인하고 있습니다.</p>
+        </main>
       </IonApp>
     );
   }
@@ -43,7 +79,7 @@ const App: React.FC = () => {
       </IonReactRouter>
       <IonToast
         isOpen={authError}
-        message="로그인 상태를 확인하지 못했습니다. 연결을 확인하고 다시 로그인해 주세요."
+        message="로그인 상태를 확인하지 못했습니다. 다시 로그인해 주세요."
         duration={5000}
         onDidDismiss={() => setAuthError(false)}
       />
@@ -52,4 +88,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
