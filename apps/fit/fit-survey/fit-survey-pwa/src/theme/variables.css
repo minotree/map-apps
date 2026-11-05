@@ -8,5 +8,15 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-primary-contrast-rgb: 255, 255, 255;
   --ion-color-primary-shade: #3171e0;
   --ion-color-primary-tint: #4c90ff;
+  --ion-background-color: #ffffff;
+}
+
+html,
+body,
+#root,
+ion-app,
+ion-page,
+ion-content {
+  background: #ffffff;
 }
 

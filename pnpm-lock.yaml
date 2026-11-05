@@ -260,11 +260,11 @@ importers:
         specifier: 8.0.3
         version: 8.0.3(@capacitor/core@8.5.2)
       '@ionic/react':
-        specifier: ^9.0.0
+        specifier: 9.0.6
         version: 9.0.6(@stencil/core@4.45.2)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@ionic/react-router':
-        specifier: ^9.0.0
-        version: 9.0.10(@stencil/core@4.45.2)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react-router-dom@6.30.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-router@6.30.6(react@19.0.0))(react@19.0.0)
+        specifier: 9.0.6
+        version: 9.0.6(@stencil/core@4.45.2)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react-router-dom@6.30.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-router@6.30.6(react@19.0.0))(react@19.0.0)
       '@map-apps/image-api':
         specifier: workspace:*
         version: link:../../../../packages/image-api
@@ -274,18 +274,15 @@ importers:
       ionicons:
         specifier: ^8.1.0
         version: 8.1.0
-      leaflet:
-        specifier: ^1.9.4
-        version: 1.9.4
+      ol:
+        specifier: 10.10.0
+        version: 10.10.0
       react:
         specifier: 19.0.0
         version: 19.0.0
       react-dom:
         specifier: 19.0.0
         version: 19.0.0(react@19.0.0)
-      react-leaflet:
-        specifier: ^5.0.0
-        version: 5.0.0(leaflet@1.9.4)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react-router:
         specifier: ^6.30.0
         version: 6.30.6(react@19.0.0)
@@ -311,9 +308,6 @@ importers:
       '@testing-library/user-event':
         specifier: ^14.4.3
         version: 14.6.7(@testing-library/dom@10.4.2)
-      '@types/leaflet':
-        specifier: ^1.9.22
-        version: 1.9.22
       '@types/react':
         specifier: 19.0.10
         version: 19.0.10
@@ -1686,27 +1680,17 @@ packages:
     resolution: {integrity: sha512-TshtaFQsovB4NWRBydbNFawql6yul7d5bMiW1WYYf17hd99V6xdDdk3vtF51bw6sLkxON3bDQpWsnUc9/hVo3g==}
     engines: {node: '>=16.0.0'}
 
-  '@ionic/core@9.0.10':
-    resolution: {integrity: sha512-Pel8zRdgKJq4zhAHmMOBt4TgEg8yd6AtUBbRO3h5ZEKsflfcbFXZrWmeoWGW7DEwkstj54J8/dOrnDl2SCguhw==}
-    engines: {node: '>= 16'}
-
   '@ionic/core@9.0.6':
     resolution: {integrity: sha512-WWxjOjwKPU75BuEhc42t3n2Tn89YEDe5Pce9kA61w/TlWVM3tqiAYC+qfR9MXmER4pQcST01oM2gftheMzcV6g==}
     engines: {node: '>= 16'}
 
-  '@ionic/react-router@9.0.10':
-    resolution: {integrity: sha512-q99MMTP7Kf2zXLZKBHCA6t7aG7kqCDLaX87P7Lcbm/q8gRt96aru8WIYJJiCbE1kzY1npxS6QWgALgxokCtkpQ==}
+  '@ionic/react-router@9.0.6':
+    resolution: {integrity: sha512-YHw3ss1AemSRZArEvi7MITTE2JrrLW/su0ZGl51pShKLZdH5TKI0dM+0BzsBbZ1Xmi423t8NRjZseYk3do/NQg==}
     peerDependencies:
       react: ^18 || ^19
       react-dom: ^18 || ^19
       react-router: '>=6.4.0 <7'
       react-router-dom: '>=6.4.0 <7'
-
-  '@ionic/react@9.0.10':
-    resolution: {integrity: sha512-JuyxtGmkUTfwQq934h0mw8vuzFRPPsW9UUMuCL8BY8q0Sl8rRLKv6u/0M8cA/TWDgduMRAAhd/TdSHlII0kTKw==}
-    peerDependencies:
-      react: ^18 || ^19
-      react-dom: ^18 || ^19
 
   '@ionic/react@9.0.6':
     resolution: {integrity: sha512-WAcbe7ZDIDqQaXvcAF7+AxpYW3Y3HFvZbDnpwQtoSUo8RTAw+AQQOTTSlp1eHOjwqpVqYceBFAdhfNbzBfw/1w==}
@@ -7163,38 +7147,20 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ionic/core@9.0.10':
-    dependencies:
-      '@stencil/core': 4.45.2
-      ionicons: 8.1.0
-      tslib: 2.8.1
-
   '@ionic/core@9.0.6':
     dependencies:
       '@stencil/core': 4.45.2
       ionicons: 8.1.0
       tslib: 2.8.1
 
-  '@ionic/react-router@9.0.10(@stencil/core@4.45.2)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react-router-dom@6.30.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-router@6.30.6(react@19.0.0))(react@19.0.0)':
+  '@ionic/react-router@9.0.6(@stencil/core@4.45.2)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react-router-dom@6.30.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-router@6.30.6(react@19.0.0))(react@19.0.0)':
     dependencies:
-      '@ionic/core': 9.0.10
-      '@ionic/react': 9.0.10(@stencil/core@4.45.2)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@ionic/core': 9.0.6
+      '@ionic/react': 9.0.6(@stencil/core@4.45.2)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
       react-router: 6.30.6(react@19.0.0)
       react-router-dom: 6.30.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - '@stencil/core'
-      - '@types/react'
-
-  '@ionic/react@9.0.10(@stencil/core@4.45.2)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
-    dependencies:
-      '@ionic/core': 9.0.10
-      '@stencil/react-output-target': 1.7.0(@stencil/core@4.45.2)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      ionicons: 8.1.0
-      react: 19.0.0
-      react-dom: 19.0.0(react@19.0.0)
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@stencil/core'
@@ -7447,12 +7413,6 @@ snapshots:
   '@protobufjs/pool@1.1.0': {}
 
   '@protobufjs/utf8@1.1.2': {}
-
-  '@react-leaflet/core@3.0.0(leaflet@1.9.4)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
-    dependencies:
-      leaflet: 1.9.4
-      react: 19.0.0
-      react-dom: 19.0.0(react@19.0.0)
 
   '@react-leaflet/core@3.0.0(leaflet@1.9.4)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
@@ -10342,13 +10302,6 @@ snapshots:
   react-is@18.3.1: {}
 
   react-is@19.3.1: {}
-
-  react-leaflet@5.0.0(leaflet@1.9.4)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
-    dependencies:
-      '@react-leaflet/core': 3.0.0(leaflet@1.9.4)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      leaflet: 1.9.4
-      react: 19.0.0
-      react-dom: 19.0.0(react@19.0.0)
 
   react-leaflet@5.0.0(leaflet@1.9.4)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:

@@ -10,10 +10,10 @@
 | 단계 | 작업 | 상태 | 현재 결과 / 재개 기준 |
 | --- | --- | --- | --- |
 | 1 | 공통 패키지와 네 leaf 앱 이관 | 완료 | 공통 계약·데이터, 사용자 PWA·토스, 조사 PWA, 관리자 desktop 이관 |
-| 2 | 앱별 자동 검사 | 완료 | 앱별 타입·단위·lint·build와 관리자 Rust 검사 완료 |
+| 2 | 앱별 자동 검사 | 완료 | 조사 PWA 15 tests·OpenLayers build, 관리자 43 tests·웹/Rust/Tauri release build 등 앱별 검사 완료 |
 | 3 | Supabase 기준 정리 | 완료 | 단일 관리자 기준 production migration·bootstrap 적용. 잘못 추가된 일반 조사자 정책 2개를 2026-11-05 SQL Editor에서 제거 완료 |
 | 4 | Cloudflare R2·Worker 전환 | **진행 중** | 비공개 `walk-fit-images` 버킷과 Worker 배포, 네 앱 로컬 주소 연결, `/health` 통과. 실제 이미지 흐름 검증 대기 |
-| 5 | 플랫폼 실환경·배포 검증 | 진행 중 | 조사 PWA production 배포와 HTTP 200·이미지 Worker CORS 확인. 실제 로그인·등록 흐름 대기 |
+| 5 | 플랫폼 실환경·배포 검증 | 진행 중 | 조사 PWA OpenLayers 전환본 production 배포·HTTP 200 확인, 관리자 Windows x64 EXE·NSIS·MSI 생성. iPhone 재실행과 Windows 설치·로그인 검증 대기 |
 
 ### 다음에 재개할 작업
 
@@ -105,8 +105,8 @@
 
 | 제품군 | 상태 | 현재 결과 | 다음 기준 또는 작업 |
 | --- | --- | --- | --- |
-| fit-survey | 진행 중 | 조사 PWA 1차 이전, 타입·12 tests·lint·PWA build 완료 | Cypress 실행 오류 해결과 실제 조사→관리자 승인 연동 검증 |
-| fit-admin | 진행 중 | 관리자 desktop 1차 이전, 타입·43 tests·lint·웹 build·Rust check 완료 | Python 환경과 Tauri dev·Windows 설치, 실DB 승인 흐름 검증 |
+| fit-survey | 진행 중 | OpenLayers·V-World 전환, 타입·15 tests·lint·PWA build와 production 배포 완료 | iPhone 강제 종료→재실행과 실제 조사→관리자 승인 연동 검증 |
+| fit-admin | 진행 중 | 타입·43 tests·lint·웹/Rust 검사와 Windows x64 EXE·NSIS·MSI 생성 완료 | Python 환경과 Windows 설치·로그인, 실DB 승인 흐름 검증 |
 | fit-app | 진행 중 | 공통 패키지·사용자 PWA·토스 앱 1차 이전과 자동 검사 완료 | PWA·토스 E2E 종료 정체, 실제 브라우저·토스 기기와 배포 후속 검증 |
 
 ## 운영 원칙

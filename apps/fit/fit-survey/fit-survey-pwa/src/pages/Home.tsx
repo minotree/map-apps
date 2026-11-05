@@ -186,7 +186,7 @@ const Home: React.FC = () => {
 
       <IonContent fullscreen className="home-content">
         <div className="map-container-full">
-          {/* Leaflet 지도 & 중심 핀 */}
+          {/* OpenLayers 지도 & 중심 핀 */}
           <SurveyMap
             center={centerCoords}
             target={mapTarget}

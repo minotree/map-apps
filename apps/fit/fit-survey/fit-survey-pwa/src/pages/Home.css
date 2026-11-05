@@ -1,4 +1,5 @@
 .home-content {
+  --background: #ffffff;
   --padding-top: 0;
   --padding-bottom: 0;
   --padding-start: 0;
@@ -20,9 +21,9 @@
   right: 16px;
   bottom: 24px;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  /* iOS standalone PWA가 프로세스 재시작 뒤 지도 위의 backdrop-filter
+     합성 레이어를 검게 복원하는 경우가 있어 불투명 배경만 사용한다. */
+  background: #ffffff;
   border-radius: 16px;
   padding: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
