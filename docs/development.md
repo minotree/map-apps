@@ -67,7 +67,7 @@ git diff --check
 | Cypress E2E | 개발 서버 실행 후 `pnpm.cmd --filter @map-apps/fit-survey-pwa test.e2e` |
 | 빌드 | `pnpm.cmd build:fit-survey:pwa` |
 | 미리보기 | `pnpm.cmd --filter @map-apps/fit-survey-pwa preview` → `http://127.0.0.1:4175` |
-| Cloudflare Pages 배포 | 미구성. 프로젝트·도메인·환경변수 확정과 사용자 승인 후 추가 |
+| Cloudflare 배포 | `pnpm.cmd --filter @map-apps/fit-survey-pwa run deploy` → `https://walk-fit-survey.minotree0902.workers.dev` |
 
 ## 산책핏 관리자 Windows desktop
 

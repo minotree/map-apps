@@ -1,13 +1,11 @@
 // src/services/sites.ts
 import { supabase } from '../lib/supabase';
-import { BUCKETS } from '../lib/constants';
 import type { ExerciseSite, SiteUpdate } from '../types/database';
 
 export interface ListSitesParams {
   searchQuery?: string;
   publishedFilter?: 'all' | 'published' | 'unpublished';
 }
-
 /**
  * survey_locations JOIN하여 지점 목록 조회
  * (외래키 survey_location_id 명시적 지정)
@@ -77,15 +75,4 @@ export async function updateSite(id: string, siteData: SiteUpdate) {
   }
 
   return data as ExerciseSite;
-}
-
-/**
- * Storage 상대 경로를 Public URL로 변환하는 헬퍼 함수
- */
-export function getSiteImageUrl(path?: string | null): string | null {
-  if (!path) return null;
-  if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  
-  const { data } = supabase.storage.from(BUCKETS.SURVEY_PHOTOS).getPublicUrl(path);
-  return data.publicUrl;
 }

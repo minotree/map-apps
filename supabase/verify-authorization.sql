@@ -67,6 +67,25 @@ with failures as (
   )
 
   union all
+  select 'non_admin_survey_policy_remains:' || policyname
+  from pg_policies
+  where schemaname = 'public' and tablename = 'survey_locations'
+    and policyname <> 'survey_locations_admin_all'
+    and roles && array['anon', 'authenticated']::name[]
+
+  union all
+  select 'survey_admin_policy_missing_admin_check'
+  where exists (
+    select 1 from pg_policies
+    where schemaname = 'public' and tablename = 'survey_locations'
+      and policyname = 'survey_locations_admin_all'
+      and (
+        coalesce(qual, '') not ilike '%admin_is_owner%'
+        or coalesce(with_check, '') not ilike '%admin_is_owner%'
+      )
+  )
+
+  union all
   select 'business_rows_remain:' || target.table_name
   from (values
     ('survey_locations'),

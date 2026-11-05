@@ -35,10 +35,10 @@ PWA 설정을 소유한다. Capacitor 설정은 보존하지만 Android/iOS 네�
 실제 값은 `.env.local` 또는 Cloudflare 배포 환경에 두고 `.env.example`에는 플레이스홀더만 둔다.
 
 - `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY` — 현재 호환 이름. publishable key만 사용하고 향후 명칭 전환 검토
+- `VITE_SUPABASE_PUBLISHABLE_KEY` — 브라우저 공개용 Supabase publishable key
 - `VITE_GEOCODING_PROVIDER`
 - `VITE_VWORLD_API_KEY`
-- `VITE_API_BASE_URL`
+- `VITE_IMAGE_API_BASE_URL`
 
 ## 실행과 검증
 
@@ -52,7 +52,7 @@ PWA 설정을 소유한다. Capacitor 설정은 보존하지만 Android/iOS 네�
 | Cypress E2E | 개발 서버 실행 후 `pnpm.cmd --filter @map-apps/fit-survey-pwa test.e2e` |
 | 빌드 | `pnpm.cmd build:fit-survey:pwa` |
 | 미리보기 | `pnpm.cmd --filter @map-apps/fit-survey-pwa preview` → `http://127.0.0.1:4175` |
-| Cloudflare Pages 배포 | 미구성. 프로젝트·도메인·환경변수 확정과 사용자 승인 후 추가 |
+| Cloudflare 배포 | `pnpm.cmd --filter @map-apps/fit-survey-pwa run deploy` → `https://walk-fit-survey.minotree0902.workers.dev` |
 
 자동 검사, PWA 설치, 위치·카메라 실기기, 실제 Supabase 등록, 관리자 승인 연동을 구분해 기록한다.
 

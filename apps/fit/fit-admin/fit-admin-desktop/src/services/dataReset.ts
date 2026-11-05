@@ -1,6 +1,9 @@
 import { supabase } from '../lib/supabase';
 import { createDataReset } from '../lib/dataReset';
 import { checkAdminAccess } from './auth';
+import { imageApi } from './imageApi';
+
+let imageKeys: string[] | null = null;
 
 export const dataReset = createDataReset({
   async verifyAdmin() {
@@ -13,13 +16,14 @@ export const dataReset = createDataReset({
     return count;
   },
   async list(bucket, prefix, offset) {
-    const { data, error } = await supabase.storage.from(bucket).list(prefix, { limit: 1000, offset, sortBy: { column: 'name', order: 'asc' } });
-    if (error) throw new Error(`${bucket} 파일 조회 실패: ${error.message}`);
-    return data.map(item => ({ name: item.name, id: item.id ?? null }));
+    if (prefix) return [];
+    imageKeys ??= await imageApi.list();
+    const objectPrefix = bucket === 'survey-photos' ? 'site-overviews/' : 'equipment/';
+    return imageKeys.filter(key => key.startsWith(objectPrefix)).slice(offset, offset + 1000).map(name => ({ name, id: name }));
   },
-  async remove(bucket, paths) {
-    const { error } = await supabase.storage.from(bucket).remove(paths);
-    if (error) throw new Error(`${bucket} 파일 삭제 실패: ${error.message}`);
+  async remove(_bucket, paths) {
+    await Promise.all(paths.map(path => imageApi.remove(path)));
+    imageKeys = null;
   },
   async deleteRows(table) {
     const { error } = await supabase.from(table).delete().not('id', 'is', null);

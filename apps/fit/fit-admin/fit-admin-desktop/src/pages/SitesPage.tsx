@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import type { ExerciseSite, ToiletStatus, DrinkingWaterStatus } from '../types/database';
 import { sitePhotoPath } from '../lib/sitePhoto';
-import { listSites, updateSite, getSiteImageUrl } from '../services/sites';
+import { listSites, updateSite } from '../services/sites';
 import { SiteEquipmentManager } from '../components/SiteEquipmentManager';
+import { PrivateImage } from '../components/PrivateImage';
 
 export const SitesPage: React.FC = () => {
   const [sites, setSites] = useState<ExerciseSite[]>([]);
@@ -101,7 +102,7 @@ export const SitesPage: React.FC = () => {
   };
 
   // Storage 경로를 Public URL로 변환하여 보기 전용으로 출력
-  const displayImageUrl = getSiteImageUrl(sitePhotoPath(selectedSite));
+  const displayImageUrl = sitePhotoPath(selectedSite);
 
   return (
     <div className="workspace-page" style={{ display: 'flex', gap: '1rem', padding: '1rem', boxSizing: 'border-box' }}>
@@ -188,8 +189,8 @@ export const SitesPage: React.FC = () => {
                 <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '6px', textAlign: 'left' }}>지점 대표 사진 (PWA 수집)</label>
                 {displayImageUrl ? (
                   <div className="site-photo-frame">
-                    <img
-                      src={displayImageUrl}
+                    <PrivateImage
+                      imageKey={displayImageUrl}
                       alt="지점 대표 사진"
                       style={{ width: '100%', height: '100%', borderRadius: '6px', objectFit: 'contain', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
                     />

@@ -8,6 +8,7 @@ import {
   updateEquipmentCatalog,
   uploadEquipmentImage,
 } from '../services/equipment';
+import { PrivateImage } from '../components/PrivateImage';
 
 export const EquipmentPage: React.FC = () => {
   const [equipmentList, setEquipmentList] = useState<EquipmentCatalog[]>([]);
@@ -192,7 +193,7 @@ export const EquipmentPage: React.FC = () => {
                 }}
               >
                 {item.default_image_path ? (
-                  <img src={item.default_image_path} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #e2e8f0' }} />
+                  <PrivateImage imageKey={item.default_image_path} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #e2e8f0' }} />
                 ) : (
                   <div style={{ width: '40px', height: '40px', backgroundColor: '#f1f5f9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#94a3b8' }}>No Img</div>
                 )}
@@ -247,7 +248,7 @@ export const EquipmentPage: React.FC = () => {
               <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#334155', marginBottom: '6px' }}>표준 대표 이미지 / 운동 가이드 사진</label>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 {pendingPreview || formData.default_image_path ? (
-                  <img src={pendingPreview || formData.default_image_path} alt="표준 이미지" style={{ width: '120px', height: '120px', objectFit: 'contain', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
+                  pendingPreview ? <img src={pendingPreview} alt="표준 이미지" style={{ width: '120px', height: '120px', objectFit: 'contain', borderRadius: '6px', border: '1px solid #cbd5e1' }} /> : <PrivateImage imageKey={formData.default_image_path} alt="표준 이미지" style={{ width: '120px', height: '120px', objectFit: 'contain', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
                 ) : (
                   <div style={{ width: '120px', height: '120px', backgroundColor: '#e2e8f0', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: '#64748b' }}>이미지 없음</div>
                 )}

@@ -5,8 +5,8 @@
 
 ## 현재 진행 상황
 
-> 기준일: 2026-11-04
-> 전체 8단계 중 **1~5단계 기본 프로그램 이관 완료**, **6단계 시작 전**이다.
+> 기준일: 2026-11-05
+> 전체 8단계 중 **1~6단계 완료**, **7단계 코드 전환 완료·실환경 검증 대기**다.
 
 | 단계 | 작업 | 상태 | 현재 결과 / 재개 기준 |
 | --- | --- | --- | --- |
@@ -15,17 +15,16 @@
 | 3 | 사용자 토스 앱 | 완료 | `fit-app-toss` 이관, 타입·21 tests·lint·build·AIT 생성 완료 |
 | 4 | 현장 조사 PWA | 완료 | `fit-survey-pwa` 이관, 타입·12 tests·lint·PWA build 완료 |
 | 5 | 관리자 Windows desktop·Python 소스 | 완료 | `fit-admin-desktop` 이관, 타입·43 tests·lint·웹 build·`cargo check --locked` 완료 |
-| 6 | Supabase 기준 SQL·RLS·RPC 정리 | **다음 작업** | 앱별 SQL을 비교해 기준안을 문서화한다. 실제 DB에는 아직 적용하지 않는다. |
-| 7 | Cloudflare R2·Worker 이미지 계층 전환 | 대기 | 6단계의 DB 사진 경로·권한 기준 확정 후 진행 |
+| 6 | Supabase 기준 SQL·RLS·RPC 정리 | 완료 | production 권한 migration·데이터 초기화·첫 관리자 bootstrap·무변경 검증 완료 |
+| 7 | Cloudflare R2·Worker 이미지 계층 전환 | 진행 중 | 앱 코드와 Worker API 전환 완료, 버킷·Worker 배포 및 실계정 검증 대기 |
 | 8 | PWA Cloudflare Pages 배포 설정 | 대기 | 환경 분리·도메인·Worker API가 정해진 뒤 진행 |
 
 ### 다음에 재개할 위치
 
-1. 네 앱과 공통 패키지가 참조하는 Supabase 테이블·뷰·RPC·Storage bucket을 목록화한다.
-2. 원본별 SQL의 중복·충돌·적용 순서를 비교한다.
-3. 사용자·조사자·관리자 역할별 RLS 기준과 이메일 인증 흐름을 설계한다.
-4. 실행하지 않는 기준 SQL 초안과 운영 적용 체크리스트를 만든다.
-5. 사용자 확인 후에만 실제 Supabase 프로젝트나 DB를 변경한다.
+1. 단일 관리자 계정으로 조사 PWA 등록·Windows 승인·일반 사용자 공개 조회를 검증한다.
+2. Cloudflare R2 버킷과 Worker 환경변수를 준비하고 별도 승인 후 배포한다.
+3. 관리자 이미지 업로드·조회·교체·삭제와 사용자 공개 조회를 검증한다.
+4. 플랫폼별 PWA·토스·Tauri 실환경 검증으로 이동한다.
 
 기본 프로그램 이관은 끝났지만 플랫폼 실환경 검증은 별도 후속 작업으로 남아 있다. 사용자 PWA 설치·서비스
 워커, 토스 Devtools·실기기, 조사 카메라·위치, 관리자 Python 환경·Tauri dev·Windows installer와

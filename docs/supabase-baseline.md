@@ -1,18 +1,15 @@
 # 산책핏 Supabase 기준 정리
 
-> 기준일: 2026-11-04  
-> 상태: 코드 참조 목록화 완료, 운영 DB 대조 전  
-> 이 문서는 실행용 migration이 아니다. 사용자 승인과 운영 DB 감사 전에는 아래 내용을 SQL Editor나 CLI로 적용하지 않는다.
+> 기준일: 2026-11-05
+> 상태: 감사 이력 보존. 정본 migration·적용 상태는 `supabase/README.md`에서 관리
+> 이 문서는 2026-11-04 운영 DB 감사와 결정 근거다. 실행에는 `supabase/migrations`의 정본만 사용한다.
 
 ## 현재 결론
 
-네 leaf 앱과 공통 패키지는 하나의 Supabase 프로젝트에서 다음 계약을 공유한다. 현재 저장소에는 관리자 앱에서
-가져온 사진 연결·승인 migration과 감사 SQL만 있으며, 전체 스키마·RLS·RPC·Storage 정책을 재현하는 정본
-migration은 없다. 따라서 기존 SQL을 새 프로젝트나 운영 DB에 바로 실행할 수 없다.
-
-사진 접근 방식도 아직 하나로 확정되지 않았다. 조사·관리자 앱은 `getPublicUrl`을 사용하지만 사용자 앱은
-`get_published_site_photo` 결과를 받아 `survey-photos`의 서명 URL을 만든다. 버킷을 공개로 둘지 비공개로
-두고 권한 API만 사용할지 결정하기 전까지 이 차이를 유지하며, 공개 버킷을 전제로 정책을 추가하지 않는다.
+네 leaf 앱과 공통 패키지는 하나의 Supabase 프로젝트에서 계약을 공유한다. Supabase는 Auth·DB·RLS·RPC만,
+이미지는 비공개 Cloudflare R2와 Worker만 사용한다. `20261104_001_authorization_baseline.sql`은 2026-11-05
+production에 적용됐고 첫 관리자 bootstrap과 무변경 검증 migration도 완료됐다. 이 문서 아래의 과거 감사
+결과는 당시 위험과 결정 근거로 보존한다.
 
 ## 애플리케이션 데이터 계약
 
@@ -51,8 +48,8 @@ migration은 없다. 따라서 기존 SQL을 새 프로젝트나 운영 DB에 �
 | 역할 | 허용 기준 |
 | --- | --- |
 | 익명·일반 사용자 | 공개 지점과 공개 설치 기구·카탈로그만 조회. 조사 원본 행 직접 조회와 관리자 RPC 실행 금지 |
-| 인증된 조사자 | `created_by = auth.uid()`인 조사 생성·조회. 승인 상태와 연결 지점 임의 변경, 다른 조사 조회·수정 금지 |
-| 지정 관리자 | `admin_is_owner()`가 참인 경우에만 조사 검수, 지점·카탈로그·설치 기구 변경, 승인 RPC, 이미지 교체·삭제 허용 |
+| 일반 인증 사용자 | 공개 데이터 조회만 허용. 조사 행 생성·조회·변경과 승인 RPC 금지 |
+| 지정 관리자 | `admin_is_owner()`가 참인 경우에만 조사 PWA 등록·조회, 조사 검수, 지점·카탈로그·설치 기구 변경, 승인 RPC, 이미지 교체·삭제 허용 |
 | service role | 클라이언트에 배포하지 않음. 향후 Worker가 필요할 때도 기능별 서버 경계와 최소 권한을 별도 설계 |
 
 `admin_approve_survey_to_site`는 현재 `security invoker`이므로 함수 내부 검사뿐 아니라 관련 테이블의 관리자

@@ -8,6 +8,7 @@ import {
   deleteSiteEquipment,
 } from '../services/siteEquipment';
 import { listEquipmentCatalog } from '../services/equipment';
+import { PrivateImage } from './PrivateImage';
 
 interface Props {
   siteId: string;
@@ -145,7 +146,7 @@ export const SiteEquipmentManager: React.FC<Props> = ({ siteId, siteName }) => {
           {selectedEquipment ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: '#fff', padding: '6px 12px', borderRadius: '6px', border: '1px solid #2563eb', flex: 1 }}>
               {selectedEquipment.default_image_path ? (
-                <img src={selectedEquipment.default_image_path} alt="" style={{ width: '36px', height: '36px', objectFit: 'cover', borderRadius: '4px' }} />
+                <PrivateImage imageKey={selectedEquipment.default_image_path} alt="" style={{ width: '36px', height: '36px', objectFit: 'cover', borderRadius: '4px' }} />
               ) : (
                 <div style={{ width: '36px', height: '36px', backgroundColor: '#f1f5f9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#94a3b8' }}>No Img</div>
               )}
@@ -239,7 +240,7 @@ export const SiteEquipmentManager: React.FC<Props> = ({ siteId, siteName }) => {
                 {/* 기구 정보 */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   {catalog?.default_image_path ? (
-                    <img src={catalog.default_image_path} alt="" style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
+                    <PrivateImage imageKey={catalog.default_image_path} alt="" style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
                   ) : (
                     <div style={{ width: '48px', height: '48px', backgroundColor: '#f1f5f9', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#94a3b8' }}>
                       No Img
@@ -352,7 +353,7 @@ export const SiteEquipmentManager: React.FC<Props> = ({ siteId, siteName }) => {
                     }}
                   >
                     {item.default_image_path ? (
-                      <img src={item.default_image_path} alt={item.name} style={{ width: '100%', height: '100px', objectFit: 'cover', borderRadius: '6px' }} />
+                      <PrivateImage imageKey={item.default_image_path} alt={item.name} style={{ width: '100%', height: '100px', objectFit: 'cover', borderRadius: '6px' }} />
                     ) : (
                       <div style={{ width: '100%', height: '100px', backgroundColor: '#f1f5f9', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#94a3b8' }}>
                         No Image

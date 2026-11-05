@@ -4,6 +4,7 @@ import { build } from 'vite';
 import path from 'node:path';
 
 const state = {};
+globalThis.__imageTestState = state;
 globalThis.fetch = async () => { throw new Error('Network access is forbidden in image replacement tests'); };
 globalThis.__imageTestBackend = {
   async rpc(name, args) {
@@ -47,9 +48,14 @@ const result = await build({ configFile: false, logLevel: 'silent', plugins: [{
   resolveId(id) {
     if (id === 'test-entry' || id.replaceAll('\\', '/').endsWith('/test-entry')) return '\0test-entry';
     if (id === '../lib/supabase') return '\0mock-supabase';
+    if (id === './imageApi') return '\0mock-image-api';
   },
   load(id) {
     if (id === '\0mock-supabase') return 'export const supabase = globalThis.__imageTestBackend;';
+    if (id === '\0mock-image-api') return `const state = globalThis.__imageTestState; export const imageApi = {
+      async upload(kind) { state.events.push('upload'); if (state.uploadFails) throw new Error('Upload failed'); return { key: kind === 'equipment' ? 'equipment/new.webp' : 'site-overviews/new.webp', size: 4 }; },
+      async remove(key) { state.events.push('remove'); if (state.removeFails) throw new Error('Denied'); state.removed.push({ bucket: state.bucket, paths: [key] }); }
+    };`;
     if (id === '\0test-entry') return `export { updateSurveyPhoto } from ${JSON.stringify(path.resolve('src/services/surveys.ts'))};
       export { updateEquipmentCatalog } from ${JSON.stringify(path.resolve('src/services/equipment.ts'))};
       export { updateSite, listSites } from ${JSON.stringify(path.resolve('src/services/sites.ts'))};
@@ -66,7 +72,7 @@ for (const kind of ['survey', 'equipment']) {
   const replace = () => kind === 'survey' ? services.updateSurveyPhoto('target', file)
     : services.updateEquipmentCatalog('target', { name: 'test', default_image_path: 'new.webp' });
   function reset(extra = {}) {
-    Object.assign(state, { old: 'old.webp', current: 'old.webp', references: {}, events: [], removed: [], dbFails: false, uploadFails: false, removeFails: false }, extra);
+    Object.assign(state, { bucket, old: 'old.webp', current: 'old.webp', references: {}, events: [], removed: [], dbFails: false, uploadFails: false, removeFails: false }, extra);
   }
   test(`${kind}: old file is removed only after successful DB save`, async () => {
     reset(); await replace();

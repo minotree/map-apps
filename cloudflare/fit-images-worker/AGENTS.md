@@ -21,6 +21,7 @@
 | `GET /v1/admin/images?key=<key>` | 관리자 | 비공개 이미지 미리보기 |
 | `DELETE /v1/admin/images?key=<key>` | 관리자 | 교체 후 미사용 객체 삭제 |
 | `GET /v1/admin/image-url?key=<key>` | 관리자 | 5분 유효 HMAC 비공개 이미지 URL 발급 |
+| `GET /v1/admin/image-keys` | 관리자 | 초기화 검토용 R2 객체 키 목록 |
 | `GET /v1/public/sites/<siteId>/image` | 익명 | 공개·승인 지점의 전경 스트리밍 |
 | `GET /v1/public/installations/<installationId>/image` | 익명 | 공개 지점에 속한 공개 설치 기구 이미지 스트리밍 |
 | `GET /health` | 익명 | 비밀값 없는 상태 응답 |
@@ -41,4 +42,6 @@ DB 갱신과 R2 쓰기는 분산 트랜잭션이 아니다. 앱은 새 객체 �
 
 `IMAGE_SIGNING_SECRET`은 최소 32바이트 무작위 값으로 `wrangler secret put IMAGE_SIGNING_SECRET` 또는
 Cloudflare 대시보드 secret에만 저장한다. `wrangler.jsonc`, 앱 환경변수와 Git에는 넣지 않는다.
+`SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`도 배포 전 Worker secret으로 등록하며 저장소 설정에 실제 값을
+기록하지 않는다.
 

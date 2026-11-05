@@ -114,7 +114,7 @@ to authenticated
 using ((select public.admin_is_owner()))
 with check ((select public.admin_is_owner()));
 
--- fit-survey and fit-admin are both used by the single allowlisted administrator.
+-- fit-survey and fit-admin are both restricted to allowlisted administrators.
 create policy survey_locations_admin_all
 on public.survey_locations for all
 to authenticated

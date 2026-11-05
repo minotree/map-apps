@@ -167,6 +167,19 @@ async function adminImages(request: Request, env: Env): Promise<Response> {
   return json({ error: 'method_not_allowed' }, 405, { allow: 'GET,POST,DELETE' });
 }
 
+async function adminImageKeys(request: Request, env: Env): Promise<Response> {
+  const denied = await requireAdmin(request, env);
+  if (denied) return denied;
+  const keys: string[] = [];
+  let cursor: string | undefined;
+  do {
+    const page = await env.IMAGES.list({ cursor });
+    keys.push(...page.objects.map(object => object.key).filter(key => validKey(key)));
+    cursor = page.truncated ? page.cursor : undefined;
+  } while (cursor);
+  return json({ keys: keys.sort() }, 200, { 'cache-control': 'no-store' });
+}
+
 async function supabaseJson(env: Env, path: string): Promise<{ ok: true; value: unknown } | { ok: false; status: number }> {
   const response = await fetch(`${env.SUPABASE_URL.replace(/\/$/, '')}${path}`, {
     headers: { apikey: env.SUPABASE_PUBLISHABLE_KEY },
@@ -216,6 +229,7 @@ export async function handle(request: Request, env: Env): Promise<Response> {
   }
   if (url.pathname === '/health' && request.method === 'GET') return json({ ok: true });
   if (url.pathname === '/v1/admin/images') return adminImages(request, env);
+  if (url.pathname === '/v1/admin/image-keys' && request.method === 'GET') return adminImageKeys(request, env);
   if (url.pathname === '/v1/admin/image-url' && request.method === 'GET') {
     const denied = await requireAdmin(request, env);
     return denied || privateImageUrl(request, env);

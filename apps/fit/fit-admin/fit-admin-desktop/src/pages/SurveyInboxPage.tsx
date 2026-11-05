@@ -4,11 +4,12 @@ import {
   listSurveyLocations,
   approveSurveyToSite,
   updateSurveyPhoto,
-  getSurveyImageUrl,
   type SurveyLocation,
 } from '../services/surveys';
 import { LocationPickerMap } from '../components/LocationPickerMap';
 import { EquipmentImageEditor } from '../components/EquipmentImageEditor';
+import { PrivateImage } from '../components/PrivateImage';
+import { resolvePrivateImageUrl } from '../services/imageApi';
 
 export const SurveyInboxPage: React.FC = () => {
   const [surveys, setSurveys] = useState<SurveyLocation[]>([]);
@@ -63,7 +64,7 @@ export const SurveyInboxPage: React.FC = () => {
       setEditingPhoto(true);
       return;
     }
-    const url = getSurveyImageUrl(selectedSurvey.stamped_photo_path);
+    const url = await resolvePrivateImageUrl(selectedSurvey.stamped_photo_path);
     if (!url) return;
     const active = new AbortController();
     photoRequest.current?.abort();
@@ -130,7 +131,7 @@ export const SurveyInboxPage: React.FC = () => {
 
   // 선택된 항목의 사진 URL 생성
   const photoPath = selectedSurvey?.stamped_photo_path;
-  const imageUrl = getSurveyImageUrl(photoPath);
+  const imageUrl = photoPath || null;
 
   return (
     <div className="workspace-page" style={{ display: 'flex', gap: '1rem', padding: '1rem', boxSizing: 'border-box' }}>
@@ -209,8 +210,8 @@ export const SurveyInboxPage: React.FC = () => {
               {uploading && <p role="status">편집한 대표 사진을 저장하는 중…</p>}
 
               {imageUrl ? (
-                <img
-                  src={imageUrl}
+                <PrivateImage
+                  imageKey={imageUrl}
                   alt="현장 대표 사진"
                   style={{ width: '100%', objectFit: 'contain', borderRadius: '4px', backgroundColor: '#000' }}
                 />
